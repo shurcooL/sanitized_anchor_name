@@ -18,3 +18,8 @@ fmt.Println(anchorName)
 // Output:
 // this-is-a-header
 ```
+
+License
+-------
+
+- [MIT License](http://opensource.org/licenses/mit-license.php)
