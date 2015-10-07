@@ -12,18 +12,27 @@ import "unicode"
 // Create returns a sanitized anchor name for the given text.
 func Create(text string) string {
 	var anchorName []rune
-	var futureDash = false
+	var lastWasDash = false
+
 	for _, r := range []rune(text) {
 		switch {
-		case unicode.IsLetter(r) || unicode.IsNumber(r):
-			if futureDash && len(anchorName) > 0 {
+		case r == ' ' || r == '-':
+			if !lastWasDash {
 				anchorName = append(anchorName, '-')
+				lastWasDash = true
 			}
-			futureDash = false
+		case unicode.IsLetter(r) || unicode.IsNumber(r):
 			anchorName = append(anchorName, unicode.ToLower(r))
+			lastWasDash = false
 		default:
-			futureDash = true
 		}
 	}
+
+	// Special-case the situation where the entire string is spaces and
+	// special chars.  At this point we'll have "-", which should be "".
+	if len(anchorName) == 1 && anchorName[0] == '-' {
+		return ""
+	}
+
 	return string(anchorName)
 }
