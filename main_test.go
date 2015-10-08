@@ -92,6 +92,7 @@ func ExampleCreate4() {
 	// Edge cases related to dashes and code.
 
 	var tests = []string{
+		"# Header 7",
 		" Header 5",
 		" Header 6\n",
 		" Header 7\n",
@@ -107,6 +108,7 @@ func ExampleCreate4() {
 	}
 
 	// Output:
+	// -header-7
 	// header-5
 	// header-6
 	// header-7
