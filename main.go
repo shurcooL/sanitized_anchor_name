@@ -7,14 +7,17 @@
 // are unique, that responsibility falls on the caller.
 package sanitized_anchor_name // import "github.com/shurcooL/sanitized_anchor_name"
 
-import "unicode"
+import (
+	"strings"
+	"unicode"
+)
 
 // Create returns a sanitized anchor name for the given text.
 func Create(text string) string {
 	var anchorName []rune
 	var lastWasDash = false
 
-	for _, r := range []rune(text) {
+	for _, r := range []rune(strings.TrimSpace(text)) {
 		switch {
 		case r == ' ' || r == '-':
 			if !lastWasDash {
