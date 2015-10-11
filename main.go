@@ -15,6 +15,42 @@ import (
 // Create returns a sanitized anchor name for the given text.
 func Create(text string) string {
 	var anchorName []rune
+	var futureDash = false
+	for _, r := range []rune(text) {
+		switch {
+		case unicode.IsLetter(r) || unicode.IsNumber(r):
+			if futureDash && len(anchorName) > 0 {
+				anchorName = append(anchorName, '-')
+			}
+			futureDash = false
+			anchorName = append(anchorName, unicode.ToLower(r))
+		default:
+			futureDash = true
+		}
+	}
+	return string(anchorName)
+}
+
+// Like Create() but compatible with GitHUB
+func CreateGitHub(text string) string {
+	var anchorName []rune
+
+	for _, r := range []rune(strings.TrimSpace(text)) {
+		switch {
+		case r == ' ' || r == '-':
+			anchorName = append(anchorName, '-')
+		case unicode.IsLetter(r) || unicode.IsNumber(r):
+			anchorName = append(anchorName, unicode.ToLower(r))
+		default:
+		}
+	}
+
+	return string(anchorName)
+}
+
+// Like Create() but compatible with GitLAB
+func CreateGitLab(text string) string {
+	var anchorName []rune
 	var lastWasDash = false
 
 	for _, r := range []rune(strings.TrimSpace(text)) {
@@ -29,12 +65,6 @@ func Create(text string) string {
 			lastWasDash = false
 		default:
 		}
-	}
-
-	// Special-case the situation where the entire string is spaces and
-	// special chars.  At this point we'll have "-", which should be "".
-	if len(anchorName) == 1 && anchorName[0] == '-' {
-		return ""
 	}
 
 	return string(anchorName)
